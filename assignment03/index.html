@@ -16,27 +16,35 @@
 		<section id="nameEntry">
 			<label for="name">Name:</label>
 			<input id="name" name="name" placeholder="Enter the name you want announced"/>
-		</section>
-		<section id="typeOfKnock">
+		<!-- </section> -->
+		<!-- <section id="typeOfKnock"> -->
 			<form id="knocks">
-				<select form="knocks">
+				<select form="knocks" id="knockList">
 					<option value="knock">Aggressive knock</option>
 					<option value="whistle">Whistle</option>
 					<option value="yoohoo">Homey alert</option>
 				</select>
 			</form>
-		</section>
-		<section id="typeOfMusic">
+		<!-- </section> -->
+		<!-- <section id="typeOfMusic"> -->
 			<form id="music">
-				<select form="music">
+				<select form="music" id="musicList">
 					<option value="elegant">Elegant</option>
 					<option value="powerful">Powerful</option>
 					<option value="evil">Evil</option>
 					<option value="comedic">Comedic</option>
 				</select>
 			</form>
+			<button id="submit">Press to be announced!</button>
 		</section>
-		<button id="submit">Press to be announced!</button>
+
+		<section id="pleaseWait" class="hide">
+			Please wait...
+		</section>
+
+		<section id="confirmed" class="hide">
+			Entry confirmed! You should enter in 5 seconds!
+		</section>
 	</body>
 
 </html>
