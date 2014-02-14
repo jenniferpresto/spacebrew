@@ -21,7 +21,7 @@ window.onload = function () {
 		sb.name = app_name;
 		sb.description("The barest bones of a Spacebrew app so far");
 
-		sb.addPublish ( "newGuest", "guestInfo", {name:" ",knock:" ",music:" "} );
+		sb.addPublish ( "newGuest", "guestInfo", {name:" ", knock:0, music:0} );
 		sb.addSubscribe ( "confirm", "boolean", false );
 
 		// connect to Spacebrew
@@ -35,22 +35,23 @@ window.onload = function () {
 			// collect information from the form on the first page
 			var guestName = $('#name').val();
 			var selectedKnock = $('#knockList').val();
+			var selectedKnockInt = parseInt(selectedKnock); // necessary?
 			var selectedMusic = $('#musicList').val();
+			var selectedMusicInt = parseInt(selectedMusic); // necessary?
 
 			console.log(guestName + " " + selectedKnock + " " + selectedMusic);
 			// close();
 
 			// create a JSON object 
 			var guest = {
-				name: guestName,
+				arrivalName: guestName,
 				knock: selectedKnock,
 				music: selectedMusic
 			}
-		 
+
+			console.log(guest);		 
 
 			sb.send( "newGuest", "guestInfo", guest );
-
-
 
 		})
 
