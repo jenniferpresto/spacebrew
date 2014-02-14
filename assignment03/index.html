@@ -13,9 +13,30 @@
 	</head>
 
 	<body>
-		<section id="container" class="hide">
-			Testing, yo!
+		<section id="nameEntry">
+			<label for="name">Name:</label>
+			<input id="name" name="name" placeholder="Enter the name you want announced"/>
 		</section>
+		<section id="typeOfKnock">
+			<form id="knocks">
+				<select form="knocks">
+					<option value="knock">Aggressive knock</option>
+					<option value="whistle">Whistle</option>
+					<option value="yoohoo">Homey alert</option>
+				</select>
+			</form>
+		</section>
+		<section id="typeOfMusic">
+			<form id="music">
+				<select form="music">
+					<option value="elegant">Elegant</option>
+					<option value="powerful">Powerful</option>
+					<option value="evil">Evil</option>
+					<option value="comedic">Comedic</option>
+				</select>
+			</form>
+		</section>
+		<button id="submit">Press to be announced!</button>
 	</body>
 
 </html>

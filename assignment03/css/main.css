@@ -1,3 +1,15 @@
 .hide {
 	display: none;
 }
+
+label {
+	display: block;
+}
+
+input, textarea {
+	display: block;
+}
+
+input {
+	width: 40%;
+}
