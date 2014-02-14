@@ -37,13 +37,13 @@ window.onload = function () {
 			var selectedKnock = $('#knockList').val();
 			var selectedMusic = $('#musicList').val();
 
-			console.log(guestName + " " + knock + " " + music);
+			console.log(guestName + " " + selectedKnock + " " + selectedMusic);
 			// close();
 
 			// create a JSON object 
 			var guest = {
 				name: guestName,
-				knock: chosenKnock,
+				knock: selectedKnock,
 				music: selectedMusic
 			}
 		 
