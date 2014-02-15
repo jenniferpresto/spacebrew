@@ -18,6 +18,7 @@ String description = "Receiver; plays music on cue";
 Spacebrew sb;
 
 JSONObject newGuestInfo;
+JSONObject testSend;
 
 String guestName;
 int knock;
@@ -27,8 +28,12 @@ void setup() {
   //  size(displayWidth, displayHeight);
   size(400, 200);
   sb = new Spacebrew( this );
-
+  
+  newGuestInfo = new JSONObject();
+  testSend = new JSONObject();
+  
   sb.addSubscribe("newGuest", "guestinfo");
+  sb.addPublish("test", "sendpoint", "\"x\":0, \"y\":0");
   sb.addPublish("confirm", "boolean", false);
 
   // cut/pasted from Spacebrew examples
@@ -47,10 +52,12 @@ void onCustomMessage ( String name, String type, String value ) {
   if ( type.equals("guestinfo") ) {
     println("in the if-statement");
     JSONObject arrival = JSONObject.parse( value );
-    println("dies here?");
-    guestName = arrival.getString("arrivalName");
+    println("arrival object: " + arrival);
+    guestName = arrival.getString("arrivalname");
     knock = arrival.getInt("knock");
     music = arrival.getInt("music");
+    
+    println("guustname: " + guestName + " knock: " + knock + " music: " + music);
 
     println(guestName + " would like to enter to music " + str(music));
 
@@ -65,4 +72,5 @@ void onCustomMessage ( String name, String type, String value ) {
     println("got it: " + m);
   }
 }
+
 

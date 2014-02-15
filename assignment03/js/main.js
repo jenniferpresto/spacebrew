@@ -49,15 +49,16 @@ window.onload = function () {
 			// create a JSON object 
 			// var guest = {arrivalname:guestname, knock:selectedknock, music:selectedmusic};
 			// var guest = {arrivalname:"guestname", knock:"selectedknock", music:"selectedmusic"};
-			var guest = {arrivalname:"1", knock:1, music:1};
+			// var guest = {arrivalname:"1", knock:1, music:1};
+			var guest = "{arrivalname:\"this is a string!\", knock:1, music:1}";
 
 			console.log(guest);		 
 
-			// sb.send( "newguest", "guestinfo", guest );
+			sb.send( "newguest", "guestinfo", guest );
 
 			// cut/pasted from Spacebrew examples
-			var mouse = {x:0, y:1};
-			sb.send("point", "point2d", mouse);  
+			// var mouse = {x:0, y:1};
+			// sb.send("point", "point2d", mouse);  
 
 
 		})
