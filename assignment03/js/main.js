@@ -21,12 +21,10 @@ window.onload = function () {
 		sb.name = app_name;
 		sb.description("The barest bones of a Spacebrew app so far");
 
-		sb.addPublish ( "newguest", "guestinfo", {arrivalname:"",knock:0,music:0} );
+		sb.addPublish ( "newGuest", "guestinfo", {arrivalname:"",knock:0,music:0} );
+		sb.addSubscribe ( "confirmation", "confirmmessage" );
 
-		// cut/pasted from Spacebrew examples
-		sb.addPublish( "point", "point2d", {x:0,y:0} );
-
-		sb.addSubscribe ( "confirm", "boolean", false );
+		sb.onCustomMessage = onCustomMessage;
 
 		// connect to Spacebrew
 		sb.connect();	// why does this go to spacebrew sandbox?
@@ -37,37 +35,29 @@ window.onload = function () {
 			e.preventDefault(e);
 
 			// collect information from the form on the first page
-			var guestname = $('#name').val();
-			var selectedknock = $('#knockList').val();
-			// var selectedKnockInt = parseInt(selectedKnock); // necessary?
-			var selectedmusic = $('#musicList').val();
-			// var selectedMusicInt = parseInt(selectedMusic); // necessary?
+			var guestName = $('#name').val();
+			var selectedKnock = $('#knockList').val();
+			var selectedMusic = $('#musicList').val();
 
-			console.log(guestname + " " + selectedknock + " " + selectedmusic);
-			// close();
+			console.log(guestName + " " + selectedKnock + " " + selectedMusic);
 
-			// create a JSON object 
-			// var guest = {arrivalname:guestname, knock:selectedknock, music:selectedmusic};
-			// var guest = {arrivalname:"guestname", knock:"selectedknock", music:"selectedmusic"};
-			// var guest = {arrivalname:"1", knock:1, music:1};
-			var guest = "{arrivalname:\"this is a string!\", knock:1, music:1}";
+			// create a pseudo JSON object;
+			// must be a string to arrive in the way that Processing expects it
 
+			var guest = "{\"arrivalname\": \"" + guestName + "\", \"knock\": " + selectedKnock + ", \"music\": " + selectedMusic + "}";
 			console.log(guest);		 
 
-			sb.send( "newguest", "guestinfo", guest );
-
-			// cut/pasted from Spacebrew examples
-			// var mouse = {x:0, y:1};
-			// sb.send("point", "point2d", mouse);  
-
-
+			sb.send( "newGuest", "guestinfo", guest );
 		})
 
-		function onBooleanMessage ( name, value ) {
-			console.log("message received! and the answer is " + value );
+		function onCustomMessage( name, value, type ){
+			if (type == "confirmmessage") {
+				value = JSON.parse(value);
+				console.log(value);
+			}
 		}
-
 	}
+
 
 	setup();
 
