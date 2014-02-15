@@ -21,7 +21,11 @@ window.onload = function () {
 		sb.name = app_name;
 		sb.description("The barest bones of a Spacebrew app so far");
 
-		sb.addPublish ( "newGuest", "guestInfo", {name:" ", knock:0, music:0} );
+		sb.addPublish ( "newguest", "guestinfo", {arrivalname:"",knock:0,music:0} );
+
+		// cut/pasted from Spacebrew examples
+		sb.addPublish( "point", "point2d", {x:0,y:0} );
+
 		sb.addSubscribe ( "confirm", "boolean", false );
 
 		// connect to Spacebrew
@@ -33,25 +37,28 @@ window.onload = function () {
 			e.preventDefault(e);
 
 			// collect information from the form on the first page
-			var guestName = $('#name').val();
-			var selectedKnock = $('#knockList').val();
-			var selectedKnockInt = parseInt(selectedKnock); // necessary?
-			var selectedMusic = $('#musicList').val();
-			var selectedMusicInt = parseInt(selectedMusic); // necessary?
+			var guestname = $('#name').val();
+			var selectedknock = $('#knockList').val();
+			// var selectedKnockInt = parseInt(selectedKnock); // necessary?
+			var selectedmusic = $('#musicList').val();
+			// var selectedMusicInt = parseInt(selectedMusic); // necessary?
 
-			console.log(guestName + " " + selectedKnock + " " + selectedMusic);
+			console.log(guestname + " " + selectedknock + " " + selectedmusic);
 			// close();
 
 			// create a JSON object 
-			var guest = {
-				arrivalName: guestName,
-				knock: selectedKnock,
-				music: selectedMusic
-			}
+			// var guest = {arrivalname:guestname, knock:selectedknock, music:selectedmusic};
+			// var guest = {arrivalname:"guestname", knock:"selectedknock", music:"selectedmusic"};
+			var guest = {arrivalname:"1", knock:1, music:1};
 
 			console.log(guest);		 
 
-			sb.send( "newGuest", "guestInfo", guest );
+			// sb.send( "newguest", "guestinfo", guest );
+
+			// cut/pasted from Spacebrew examples
+			var mouse = {x:0, y:1};
+			sb.send("point", "point2d", mouse);  
+
 
 		})
 

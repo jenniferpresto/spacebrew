@@ -28,8 +28,12 @@ void setup() {
   size(400, 200);
   sb = new Spacebrew( this );
 
-  sb.addSubscribe("newGuest", "guestInfo");
+  sb.addSubscribe("newGuest", "guestinfo");
   sb.addPublish("confirm", "boolean", false);
+
+  // cut/pasted from Spacebrew examples
+  sb.addSubscribe ("p5Point", "point2d");
+
 
   sb.connect(server, name, description);
 }
@@ -37,16 +41,28 @@ void setup() {
 void draw() {
 }
 
-// this function not getting called, apparently
 void onCustomMessage ( String name, String type, String value ) {
   println("received!");
-  JSONObject arrival = JSONObject.parse( value );
-  guestName = arrival.getString("arrivalName");
-  knock = arrival.getInt("knock");
-  music = arrival.getInt("music");
+  //  String stringValue = str(value);
+  if ( type.equals("guestinfo") ) {
+    println("in the if-statement");
+    JSONObject arrival = JSONObject.parse( value );
+    println("dies here?");
+    guestName = arrival.getString("arrivalName");
+    knock = arrival.getInt("knock");
+    music = arrival.getInt("music");
 
-  println(guestName + " would like to enter to music " + str(music));
+    println(guestName + " would like to enter to music " + str(music));
 
-  sb.send("confirm", true );
+    sb.send("confirm", true );
+  }
+
+  // cut/pasted from Spacebrew examples
+  if ( type.equals("point2d") ) {
+    // parse JSON!
+    JSONObject m = JSONObject.parse( value );
+//    remotePoint.set( m.getInt("x"), m.getInt("y"));
+    println("got it: " + m);
+  }
 }
 
