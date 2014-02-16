@@ -23,6 +23,9 @@ String guestName;
 int knock;
 int music;
 
+String iTunesPlayApp;
+String iTunesPauseApp;
+
 void setup() {
   //  size(displayWidth, displayHeight);
   size(400, 200);
@@ -38,7 +41,9 @@ void setup() {
   instantConfirmation.setInt("r", 100);
   instantConfirmation.setInt("g", 100);
   instantConfirmation.setInt("b", 100);
-  
+
+  iTunesPlayApp = "/Users/SandlapperNYC/Developer/SpacebrewClass/SpacebrewRepo/assignment03/iTunesPlay.app";
+  iTunesPauseApp = "/Users/SandlapperNYC/Developer/SpacebrewClass/SpacebrewRepo/assignment03/iTunesPause.app"
 }
 
 void draw() {
@@ -61,5 +66,16 @@ void onCustomMessage ( String name, String type, String value ) {
     println("Let's see what we're sending: \n" + instantConfirmation.toString());
     sb.send("confirmation", "confirmmessage", instantConfirmation.toString());
   }
+}
+
+void mousePressed() {
+  println("calling mousePressed function");
+  //  open("/Users/SandlapperNYC/Developer/SpacebrewClass/SpacebrewRepo/assignment03/iTunesPlaypause.app");
+  open(iTunesPlayApp);
+}
+
+void keyPressed() {
+  println("calling keyPressed");
+  open(iTunesPauseApp);
 }
 
