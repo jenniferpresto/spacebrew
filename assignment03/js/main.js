@@ -54,6 +54,12 @@ window.onload = function () {
 			if (type == "confirmmessage") {
 				value = JSON.parse(value);
 				console.log(value);
+
+				console.log(value.r);
+				console.log(value.g);
+				console.log(value.b);
+
+				document.body.style.backgroundColor="rgb(" + value.r + ", " + value.g + ", " + value.b + ")";
 			}
 		}
 	}

@@ -12,23 +12,26 @@
 import spacebrew.*;
 
 String server = "sandbox.spacebrew.cc";
-String name="Processing side Custom Object Example";
+String name="ProcessingObjectApp";
 String description = "Receiver; plays music on cue";
 
 Spacebrew sb;
 
 JSONObject instantConfirmation;
 
-String guestName;
-int knock;
-int music;
+String guestName = "";
+int knockIndex;
+int musicIndex;
 
 String iTunesPlayApp;
 String iTunesPauseApp;
 
+PFont centuryGothic;
+color bgColor = color(0, 0, 0);
+
 void setup() {
   //  size(displayWidth, displayHeight);
-  size(400, 200);
+  size(800, 600);
   sb = new Spacebrew( this );
 
   instantConfirmation = new JSONObject();
@@ -43,10 +46,16 @@ void setup() {
   instantConfirmation.setInt("b", 100);
 
   iTunesPlayApp = "/Users/SandlapperNYC/Developer/SpacebrewClass/SpacebrewRepo/assignment03/iTunesPlay.app";
-  iTunesPauseApp = "/Users/SandlapperNYC/Developer/SpacebrewClass/SpacebrewRepo/assignment03/iTunesPause.app"
+  iTunesPauseApp = "/Users/SandlapperNYC/Developer/SpacebrewClass/SpacebrewRepo/assignment03/iTunesPause.app";
+
+  centuryGothic = loadFont("CenturyGothic-Bold-64.vlw");
+  textFont(centuryGothic);
+  textAlign(CENTER, CENTER);
 }
 
 void draw() {
+  background(bgColor);
+  text(guestName, width/2, height/2);
 }
 
 void onCustomMessage ( String name, String type, String value ) {
@@ -56,15 +65,28 @@ void onCustomMessage ( String name, String type, String value ) {
     JSONObject arrival = JSONObject.parse( value );
     println("arrival object: " + arrival);
     guestName = arrival.getString("arrivalname");
-    knock = arrival.getInt("knock");
-    music = arrival.getInt("music");
+    knockIndex = arrival.getInt("knock");
+    musicIndex = arrival.getInt("music");
 
-    println("guustname: " + guestName + " knock: " + knock + " music: " + music);
+    println("Name of guest: " + guestName + " knock: " + knockIndex + " music: " + musicIndex);
 
-    println(guestName + " would like to enter to music " + str(music));
+    println(guestName + " would like to enter to music " + str(musicIndex));
+
+    // pick a random color
+    int red = int(random(255));
+    int green = int(random(255));
+    int blue = int(random(255));
+
+    // send that color to the web app
+    instantConfirmation.setInt("r", red);
+    instantConfirmation.setInt("g", green);
+    instantConfirmation.setInt("b", blue);
 
     println("Let's see what we're sending: \n" + instantConfirmation.toString());
     sb.send("confirmation", "confirmmessage", instantConfirmation.toString());
+    
+    // change background color here to same color
+    bgColor = color(red, green, blue);
   }
 }
 
