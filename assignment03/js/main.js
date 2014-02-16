@@ -29,13 +29,18 @@ window.onload = function () {
 		// connect to Spacebrew
 		sb.connect();	// why does this go to spacebrew sandbox?
 
+		// the guest name must be a global variable so that
+		// it can be generated to send to Processing app and
+		// used to compare against what comes back
+		var guestName = " ";
+
 		// add button listener
 		$('#submit').click (function (e) {
 			// prevent refresh
 			e.preventDefault(e);
 
 			// collect information from the form on the first page
-			var guestName = $('#name').val();
+			guestName = $('#name').val();
 			var selectedKnock = $('#knockList').val();
 			var selectedMusic = $('#musicList').val();
 
@@ -55,11 +60,11 @@ window.onload = function () {
 				value = JSON.parse(value);
 				console.log(value);
 
-				console.log(value.r);
-				console.log(value.g);
-				console.log(value.b);
-
-				document.body.style.backgroundColor="rgb(" + value.r + ", " + value.g + ", " + value.b + ")";
+				console.log("saved guestName is :" + guestName);
+				// change the background only if the name you get back is the same one you sent
+				if (value.name == guestName) {
+					document.body.style.backgroundColor="rgb(" + value.r + ", " + value.g + ", " + value.b + ")";
+				}
 			}
 		}
 	}
