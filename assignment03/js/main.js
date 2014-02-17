@@ -7,9 +7,6 @@ Processing sketch, which sends back a confirmation.
 If the person is in a line, then displays a timer
 until that person can make his/her entrance.
 
-After confirmation sent and timer counts down, the app
-closes itself.
-
 Helpful code for timer available here:
 http://stackoverflow.com/questions/1191865/code-for-a-simple-javascript-countdown-timer
 
@@ -19,13 +16,13 @@ http://stackoverflow.com/questions/1191865/code-for-a-simple-javascript-countdow
 window.onload = function () {
 
 	var sb;
-	var app_name = "JGP Custom Object - Kill Me Now";
+	var app_name = "guestAnnounceApp";
 
 	function setup() {
 		sb = new Spacebrew.Client({reconnect:true}); // what does reconnect part mean?
 
 		sb.name = app_name;
-		sb.description("The barest bones of a Spacebrew app so far");
+		sb.description("Informs host how guest would like to enter");
 
 		sb.addPublish ( "newGuest", "guestinfo", {arrivalname:"",knock:0,music:0} );
 		sb.addSubscribe ( "confirmation", "confirmmessage" );
@@ -34,15 +31,15 @@ window.onload = function () {
 		sb.onCustomMessage = onCustomMessage;
 
 		// connect to Spacebrew
-		sb.connect();	// why does this go to spacebrew sandbox?
+		sb.connect();
 
 		// the guest name must be a global variable so that
 		// it can be generated to send to Processing app and
-		// used to compare against what comes back
+		// then used to compare against what comes back
 		var guestName = " ";
-		var waitTime = 0.0;
-		var counter;
-		var aboutToEnter = false;
+		var waitTime = 0.0; // will come from Processing app
+		var counter; // used for timer
+		var aboutToEnter = false; // used to send to final Welcome page at end
 
 		// add button listener
 		$('#submit').click (function (e) {
@@ -54,70 +51,81 @@ window.onload = function () {
 			var selectedKnock = $('#knockList').val();
 			var selectedMusic = $('#musicList').val();
 
-			console.log(guestName + " " + selectedKnock + " " + selectedMusic);
-
 			// create a pseudo JSON object;
-			// must be a string to arrive in the way that Processing expects it
-
+			// this must be a string to arrive in the way that Processing can parse it
 			var guest = "{\"arrivalname\": \"" + guestName + "\", \"knock\": " + selectedKnock + ", \"music\": " + selectedMusic + "}";
-			console.log(guest);		 
+			// console.log(guest); // for debugging 
 
 			sb.send( "newGuest", "guestinfo", guest );
 		})
 
+		// this function is called every time this app receives any message from the Processing app
+		// via Spacebrew; the Processing app sends only custom messages.
 		function onCustomMessage( name, value, type ){
-			console.log(value);
+			// incoming message contains information about that person's entrance
+			// console.log(value); // uncomment if you want to see the raw information
 			value = JSON.parse ( value );
-			console.log("saved guestName is :" + guestName + "and wait time is " + waitTime);
 
-			// only run these functions if responding to the same person
+			// Because all connected web apps will receive any message, we
+			// only run these functions if responding to the relevant person.
+			// Therefore must compare guest name to make sure it matches.
 			if ( value.name == guestName ) {
 
-				// change waitTime variable only if the names match
+				// round the waittime, which arrives from Processing
+				// in the form of milliseconds, to seconds
 				waitTime = Math.floor( value.waittime / 1000 );
 
+				// this happens if the person can enter immediately...
 				if (type == "confirmmessage") {
+					// change the background color to match the Processing app
+					// (chosen at random by the Processing app)
 					document.body.style.backgroundColor="rgb(" + value.r + ", " + value.g + ", " + value.b + ")";
+					// display the confirm page
 					$("#nameEntry").addClass("hide");
 					$("#pleaseWait").addClass("hide");
 					$("#confirmed").removeClass("hide");
 
+					// when confirmed to enter, change this to true,
+					// so that app will show final screen when complete
 					aboutToEnter = true;
 
-				} else if (type == "waitconfirm") {
-					// again, change webpage of only the relevant guest
-					console.log ("getting wait message, and the info is ", value );
-						// hide the main page and show timer page
-					$("#nameEntry").addClass("hide");
-					$("#pleaseWait").removeClass("hide");
-
-					console.log("total time: " + waitTime);
 				}
 
+				// ...and this happens if the person must wait
+				else if (type == "waitconfirm") {
+					// hide the main page and show timer page
+					// (at this point, the confirmation page is still hidden, so no need to change)
+					$("#nameEntry").addClass("hide");
+					$("#pleaseWait").removeClass("hide");
+				}
+
+				// same timer function is used whether the person is
+				// waiting or entering
 				counter = setInterval (countDownTimer, 1000);
 			}
 		}
 
+		// timer uses global variable "waitTime," which is
+		// set based on the messages received from the Processing app
 		function countDownTimer() {
-			console.log("calling timer");
 			waitTime -= 1;
 			if ( waitTime <= 0 ) {
 				clearInterval ( counter );
+				// if person is entering, rather than waiting,
+				// display final welcome screen
 				if ( aboutToEnter ) {
 					$("#confirmed").addClass("hide");
 					$("#welcome").removeClass("hide");
 				}
 				return;
 			}
+
+			// display the timer on the web app
 			document.getElementById("timer1").innerHTML = waitTime;
 			document.getElementById("timer2").innerHTML = waitTime;
-			// don't know what's wrong with JQuery
-			// $("#timer1").html = waitTime ;
-			// $("#timer2").html = waitTime ;
 		}
 	}
 
-
+	// kick it all off with one function call
 	setup();
-
 }
