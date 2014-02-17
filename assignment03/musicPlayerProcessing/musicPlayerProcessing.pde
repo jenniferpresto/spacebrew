@@ -104,8 +104,8 @@ void setup() {
 
   sb.connect(server, name, description);
 
-  iTunesPlayApp = "/Users/SandlapperNYC/Developer/SpacebrewClass/SpacebrewRepo/assignment03/iTunesPlay.app";
-  iTunesPauseApp = "/Users/SandlapperNYC/Developer/SpacebrewClass/SpacebrewRepo/assignment03/iTunesPause.app";
+  iTunesPlayApp = "/Users/SandlapperNYC/Development/SpacebrewClass/SpacebrewRepo/assignment03/iTunesPlay.app";
+  iTunesPauseApp = "/Users/SandlapperNYC/Development/SpacebrewClass/SpacebrewRepo/assignment03/iTunesPause.app";
 
   centuryGothic = loadFont("CenturyGothic-Bold-64.vlw");
   textFont(centuryGothic);
