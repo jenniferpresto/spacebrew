@@ -16,11 +16,12 @@
 	<body>
 		<section id="nameEntry">
 			<div id="title">Welcome!</div>
-			<div id="instructions">Please choose the name and the manner in which you would like to be announced:</div>
+			<div class="instructions" id="maininstructions">Please choose the name and the manner in which you would like to be announced:</div>
 			<div class="spacer"></div>
-			<input id="name" name="name" placeholder="Enter the name you want announced"/>
+			<textarea id="name" name="name" placeholder="Enter your name here"></textarea>
 			<div class="spacer"></div>
 
+			<div class="instructions">Select the type of notification:</div>
 			<form id="knocks">
 				<select form="knocks" id="knockList">
 					<option value="0">Aggressive knock</option>
@@ -29,6 +30,7 @@
 				</select>
 			</form>
 
+			<div class="instructions">Select your theme music:</div>
 			<form id="music">
 				<select form="music" id="musicList">
 					<option value="0">Powerful</option>
@@ -48,7 +50,7 @@
 		</section>
 
 		<section id="confirmed" class="hide">
-			<div class="timerscreen">Entry confirmed! You should enter in</div>
+			<div class="timerscreen">Notifying host now!<br>You should enter in</div>
 			<div id="timer2" class="timerscreen"></div><br>
 			<div class="timerscreen">seconds!</div>
 		</section>

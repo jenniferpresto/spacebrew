@@ -12,10 +12,14 @@ body {
 	padding-top: 5%;
 }
 
-#instructions {
+.instructions {
 	font-size: 24px;
 	font-weight: 400;
-	padding-top: 3%;
+	padding-top: 6%;
+}
+
+#maininstructions {
+	font-size: 36px;
 }
 
 .hide {
@@ -32,7 +36,10 @@ select {
 }
 
 button {
-	margin-top: 2%;
+	margin-top: 10%;
+	width: 240px;
+	height: 100px;
+	font-size: 24px;
 
 }
 
@@ -43,24 +50,29 @@ button {
 
 .spacer {
 	display: inline-block;
-	width: 28%;
+	width: 18%;
 }
 
 
-input {
+textarea {
 	margin-top: 5%;
-	width: 40%;
-	max-width: 40%;
-
+	width: 60%;
+	max-width: 60%;
+	font-size: 24px;
+	text-align: center;
 }
 
+option {
+	font-size: 16px%;
+}
 
 #pleaseWait, #confirmed {
 	margin-top: 30%;
+	font-size: 24px;
 }
 
 .timerscreen {
-	font-size: 24px;
+	font-size: 36px;
 }
 
 #timer1, #timer2 {

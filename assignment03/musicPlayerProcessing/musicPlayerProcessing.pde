@@ -40,19 +40,19 @@ AudioPlayer[] entranceClips = new AudioPlayer[3];
 // Spacebrew
 import spacebrew.*;
 String server = "sandbox.spacebrew.cc";
-String name="ProcessingObjectApp";
+String name="HostSideAnnounceApp";
 String description = "Receiver; plays music on cue";
 Spacebrew sb;
-
-// info to send to web app
-JSONObject instantConfirmation;
-JSONObject waitConfirmation;
-ArrayList<JSONObject> waitlist; // will be used only if multiple people entering at once
 
 // info to receive from web app
 String guestName = "";
 int knockIndex = 0;
 int musicIndex = 0;
+
+// info to send to web app
+JSONObject instantConfirmation; // if the person is first in line
+JSONObject waitConfirmation; // if there'll be a wait
+ArrayList<JSONObject> waitlist; // used only if multiple people entering at once
 
 // executables to stop/start iTunes player
 String iTunesPlayApp;
@@ -72,11 +72,11 @@ int entranceStartTime = 0;
 
 void setup() {
   //  size(displayWidth, displayHeight);
-  size(800, 600);
+  size(800, 600); // for debugging
   minim = new Minim( this );
   sb = new Spacebrew( this );
 
-  // loading up the various sound clips
+  // load up the various sound clips
   knocks[0] = minim.loadFile("knocking.mp3");
   knocks[1] = minim.loadFile("whistle.mp3");
   knocks[2] = minim.loadFile("gong.mp3");
@@ -84,17 +84,14 @@ void setup() {
   entranceClips[1] = minim.loadFile("imperialMarchClip.aif");
   entranceClips[2] = minim.loadFile("clowns.mp3");
 
-  for (int i = 0; i < 3; i++) {
-    println(knocks[i].length());
-    println(entranceClips[i].length());
-  }
-
+  // create JSON object that will be sent upon instant notification
   instantConfirmation = new JSONObject();
   instantConfirmation.setString("name", "");
   instantConfirmation.setInt("r", 100);
   instantConfirmation.setInt("g", 100);
   instantConfirmation.setInt("b", 100);
 
+  // create JSON object that will be sent when person must wait
   waitConfirmation = new JSONObject();
   waitConfirmation.setString("name", "");
   waitConfirmation.setInt("waittime", 10000);
@@ -122,11 +119,17 @@ void draw() {
   // when someone activates the web app, begin the process of
   // playing the appropriate knock and music, with a
   // three-second delay between them.
-  // The following if-else statements are divided into four parts, 
-  // each of which will be called for one frame. 
+
   if (bEntranceInProgress) {
+    // change the background color to the same one showing on the web app,
+    // which gets randomly selected when the person first enters his/her information
     background(bgColor);
+    // display guest's name
     text(guestName, width/2, height/2);
+
+    // The following if-else statements are divided into four parts, 
+    // each of which gets called for one frame. 
+  
     // first, stop iTunes, play knock immediately, and start the timer
     if ( !bKnockingStarted ) {
       open( iTunesPauseApp );
@@ -134,20 +137,24 @@ void draw() {
       knocks[knockIndex].play();
       bKnockingStarted = true;
     }
+    
     // second part kicks in after the knock is complete, plus three seconds
     else if (millis() > entranceStartTime + knocks[knockIndex].length() + 3000 && !bMusicStarted) {
       entranceClips[musicIndex].play();
       bMusicStarted = true;
     }
-    // third part restarts iTunes
+    
+    // third part restarts iTunes after the theme music has ended (plus 1/10th of a second)
+    // also rewinds the clips that were just played
     else if (millis() > entranceStartTime + knocks[knockIndex].length() + 3000 + entranceClips[musicIndex].length() + 100 && !biTunesRestarted ) {
       open(iTunesPlayApp);
       knocks[knockIndex].rewind();
       entranceClips[musicIndex].rewind();
       biTunesRestarted = true;
     }
+    
     // fourth and last part makes sure there's a 10-second buffer before next person can be announced
-    //  resets all boolean variables
+    //  resets all boolean variables to false
     else if ( millis() > entranceStartTime + knocks[knockIndex].length() + entranceClips[musicIndex].length() + 13000 ) {
       bEntranceInProgress = false;
       bKnockingStarted = false;
@@ -166,10 +173,10 @@ void draw() {
     red = g.getInt("r");
     green = g.getInt("g");
     blue = g.getInt("b");
-    
+
     // once we have the information we need, delete that person from the waitlist
     waitlist.remove(0);
-    
+
     packageSendEntrance();
   }
 }
