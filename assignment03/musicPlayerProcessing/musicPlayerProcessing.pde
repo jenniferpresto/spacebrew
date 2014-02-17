@@ -31,12 +31,12 @@
  ************************ */
 
 // Audio
-import ddf.minim.spi.*;
-import ddf.minim.signals.*;
+//import ddf.minim.spi.*;
+//import ddf.minim.signals.*;
 import ddf.minim.*;
-import ddf.minim.analysis.*;
-import ddf.minim.ugens.*;
-import ddf.minim.effects.*;
+//import ddf.minim.analysis.*;
+//import ddf.minim.ugens.*;
+//import ddf.minim.effects.*;
 
 Minim minim;
 AudioPlayer[] knocks = new AudioPlayer[3];
@@ -64,12 +64,18 @@ String iTunesPauseApp;
 PFont centuryGothic;
 color bgColor = color(0, 0, 0);
 
+boolean bEntranceInProgress = false;
+boolean bKnockingStarted = false;
+boolean bMusicStarted = false;
+int entranceStartTime = 0;
+
+
 void setup() {
   //  size(displayWidth, displayHeight);
   size(800, 600);
   minim = new Minim( this );
   sb = new Spacebrew( this );
-  
+
   // loading up the various sound clips
   knocks[0] = minim.loadFile("knocking.mp3");
   knocks[1] = minim.loadFile("whistle.mp3");
@@ -98,10 +104,41 @@ void setup() {
 }
 
 void draw() {
-  background(bgColor);
-  text(guestName, width/2, height/2);
+  background(0);
+
+  // when someone activates the web app, begin the process of
+  // playing the appropriate knock and music, with a
+  // three-second delay between them
+  // following if-else-statements divided into three parts, each of which
+  // will be called for one frame each 
+  if (bEntranceInProgress) {
+    background(bgColor);
+    text(guestName, width/2, height/2);
+    // first part stops iTunes, plays the knock immediately, and starts the timer
+    if ( !bKnockingStarted ) {
+      open(iTunesPauseApp);
+      entranceStartTime = millis();
+      knocks[knockIndex].play();
+      bKnockingStarted = true;
+    }
+    // second part kicks in after the knock is complete, plus three seconds
+    else if (millis() > entranceStartTime + knocks[knockIndex].length() + 3000 && !bMusicStarted) {
+      entranceClips[musicIndex].play();
+      bMusicStarted = true;
+    }
+    // last part restarts iTunes and resets boolean variables
+    else if (millis() > entranceStartTime + knocks[knockIndex].length() + 3000 + entranceClips[musicIndex].length() + 100 ) {
+      open(iTunesPlayApp);
+      knocks[knockIndex].rewind();
+      entranceClips[musicIndex].rewind();
+      bEntranceInProgress = false;
+      bKnockingStarted = false;
+      bMusicStarted = false;
+    }
+  }
 }
 
+// this function is called when app receives a message from the web app via Spacebrew
 void onCustomMessage ( String name, String type, String value ) {
   println("received!");
   if ( type.equals("guestinfo") ) {
@@ -111,8 +148,6 @@ void onCustomMessage ( String name, String type, String value ) {
     guestName = arrival.getString("arrivalname");
     knockIndex = arrival.getInt("knock");
     musicIndex = arrival.getInt("music");
-
-    println("Name of guest: " + guestName + " knock: " + knockIndex + " music: " + musicIndex);
 
     println(guestName + " would like to enter to music " + str(musicIndex));
 
@@ -133,19 +168,21 @@ void onCustomMessage ( String name, String type, String value ) {
 
     // change background color here to same color
     bgColor = color(red, green, blue);
-    
-    entranceClips[musicIndex].play();
+
+    // reset the timer and start process when someone arrives
+    bEntranceInProgress = true;
   }
 }
 
-void mousePressed() {
-  println("calling mousePressed function");
-  //  open("/Users/SandlapperNYC/Developer/SpacebrewClass/SpacebrewRepo/assignment03/iTunesPlaypause.app");
-  open(iTunesPlayApp);
-}
-
-void keyPressed() {
-  println("calling keyPressed");
-  open(iTunesPauseApp);
-}
+// debugging
+//void mousePressed() {
+//  println("calling mousePressed function");
+//  //  open("/Users/SandlapperNYC/Developer/SpacebrewClass/SpacebrewRepo/assignment03/iTunesPlaypause.app");
+//  open(iTunesPlayApp);
+//}
+//
+//void keyPressed() {
+//  println("calling keyPressed");
+//  open(iTunesPauseApp);
+//}
 
