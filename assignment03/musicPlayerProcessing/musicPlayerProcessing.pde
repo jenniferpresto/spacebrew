@@ -129,7 +129,7 @@ void draw() {
 
     // The following if-else statements are divided into four parts, 
     // each of which gets called for one frame. 
-  
+
     // first, stop iTunes, play knock immediately, and start the timer
     if ( !bKnockingStarted ) {
       open( iTunesPauseApp );
@@ -137,13 +137,13 @@ void draw() {
       knocks[knockIndex].play();
       bKnockingStarted = true;
     }
-    
+
     // second part kicks in after the knock is complete, plus three seconds
     else if (millis() > entranceStartTime + knocks[knockIndex].length() + 3000 && !bMusicStarted) {
       entranceClips[musicIndex].play();
       bMusicStarted = true;
     }
-    
+
     // third part restarts iTunes after the theme music has ended (plus 1/10th of a second)
     // also rewinds the clips that were just played
     else if (millis() > entranceStartTime + knocks[knockIndex].length() + 3000 + entranceClips[musicIndex].length() + 100 && !biTunesRestarted ) {
@@ -152,7 +152,7 @@ void draw() {
       entranceClips[musicIndex].rewind();
       biTunesRestarted = true;
     }
-    
+
     // fourth and last part makes sure there's a 10-second buffer before next person can be announced
     //  resets all boolean variables to false
     else if ( millis() > entranceStartTime + knocks[knockIndex].length() + entranceClips[musicIndex].length() + 13000 ) {
@@ -166,6 +166,8 @@ void draw() {
   // if there is no entrance in progress, check to see if there are people on the waitlist
   // if so, execute similar function to the immediate confirmation
   else if ( waitlist.size() > 0 ) {
+
+    // get the information for the first person in line
     JSONObject g = (JSONObject)waitlist.get(0);
     guestName = g.getString("name");
     knockIndex = g.getInt("chosenKnock");
@@ -177,15 +179,19 @@ void draw() {
     // once we have the information we need, delete that person from the waitlist
     waitlist.remove(0);
 
+    // this is the same function executed when someone is announced immediately
     packageSendEntrance();
   }
 }
 
-// this function is called when app receives a message from the web app via Spacebrew
+// this function is called every time this app receives any message from the web app via Spacebrew
+// the web app sends only custom messages
+
 void onCustomMessage ( String name, String type, String value ) {
   if ( type.equals("guestinfo") ) {
+    // incoming message contains guest information
     JSONObject arrival = JSONObject.parse( value );
-    println("arrival object: " + arrival);
+    // println("arrival object: " + arrival); // debugging
 
     // pick a random color (on the dark side of the spectrum)
     red = int(random(150));
@@ -205,8 +211,13 @@ void onCustomMessage ( String name, String type, String value ) {
     // but if someone is already making his/her entrance,
     // add all the new person's information to an ArrayList and send
     // the wait time instead
+    // Instead of being immediately announced, this person will be added
+    // to the waitlist, and his/her information will eventually be accessed
+    // in the last portion of the draw loop
     else {
+      // add a new (empty) object at the end of the waitlist
       waitlist.add(new JSONObject());
+      // then access it so we can populate it with the new person's information
       JSONObject latestInfo = waitlist.get( waitlist.size() - 1 ); // get the last one; the empty one we just added
       latestInfo.setString("name", arrival.getString("arrivalname") );
       latestInfo.setInt("r", red);
@@ -214,14 +225,15 @@ void onCustomMessage ( String name, String type, String value ) {
       latestInfo.setInt("b", blue);
       latestInfo.setInt("chosenKnock", arrival.getInt("knock") );
       latestInfo.setInt("chosenMusic", arrival.getInt("music"));
-      println("new waitlist object: \n" + latestInfo);
-      println("size of the waitlist: " + waitlist.size());
+      // debugging
+      // println("new waitlist object: \n" + latestInfo);
+      // println("size of the waitlist: " + waitlist.size());
 
       // figure out long this person will have to wait
       int estimatedWaitTime = 0;
       // add the amount of time left in the current announcement
       estimatedWaitTime += (entranceStartTime + knocks[knockIndex].length() + entranceClips[musicIndex].length() + 13000) - millis();
-      println("this much time left: " + estimatedWaitTime);
+      // println("this much time left: " + estimatedWaitTime);
 
       // then add up times for all people on the waitlist ahead of this person
       for (int i = 0; i < waitlist.size() - 1; i++) {
@@ -235,15 +247,17 @@ void onCustomMessage ( String name, String type, String value ) {
       waitConfirmation.setString("name", arrival.getString("arrivalname") );
       waitConfirmation.setInt("waittime", estimatedWaitTime);
 
-      println("estimated wait time: " + estimatedWaitTime);
-
       sb.send( "waiting", "waitconfirm", waitConfirmation.toString() );
     }
   }
 }
 
+// this function is called either by the onCustomMessage function, if the person
+// can enter immediately, or by the last part of the draw function, if the
+// person has had to wait
 void packageSendEntrance() {
   // change background color to random color
+  // will be matched on that person's web app
   bgColor = color(red, green, blue);
 
   // send that color to the web app,
