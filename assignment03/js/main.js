@@ -42,6 +42,7 @@ window.onload = function () {
 		var guestName = " ";
 		var waitTime = 0.0;
 		var counter;
+		var aboutToEnter = false;
 
 		// add button listener
 		$('#submit').click (function (e) {
@@ -81,6 +82,8 @@ window.onload = function () {
 					$("#pleaseWait").addClass("hide");
 					$("#confirmed").removeClass("hide");
 
+					aboutToEnter = true;
+
 				} else if (type == "waitconfirm") {
 					// again, change webpage of only the relevant guest
 					console.log ("getting wait message, and the info is ", value );
@@ -100,6 +103,10 @@ window.onload = function () {
 			waitTime -= 1;
 			if ( waitTime <= 0 ) {
 				clearInterval ( counter );
+				if ( aboutToEnter ) {
+					$("#confirmed").addClass("hide");
+					$("#welcome").removeClass("hide");
+				}
 				return;
 			}
 			document.getElementById("timer1").innerHTML = waitTime;
