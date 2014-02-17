@@ -5,6 +5,7 @@
         <meta charset="utf-8">
 
         <link rel="stylesheet" href="css/main.css">
+        <link href='http://fonts.googleapis.com/css?family=Lato:400,900' rel='stylesheet' type='text/css'>
 
         <script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
 		<script type="text/javascript" src="js/sb-1.3.0.js"></script>
@@ -14,10 +15,12 @@
 
 	<body>
 		<section id="nameEntry">
-			<label for="name">Name:</label>
+			<div id="title">Welcome!</div>
+			<div id="instructions">Please choose the name and the manner in which you would like to be announced:</div>
+			<div class="spacer"></div>
 			<input id="name" name="name" placeholder="Enter the name you want announced"/>
-		<!-- </section> -->
-		<!-- <section id="typeOfKnock"> -->
+			<div class="spacer"></div>
+
 			<form id="knocks">
 				<select form="knocks" id="knockList">
 					<option value="0">Aggressive knock</option>
@@ -25,9 +28,7 @@
 					<option value="2">Gong</option>
 				</select>
 			</form>
-		<!-- </section> -->
 
-		<!-- <section id="typeOfMusic"> -->
 			<form id="music">
 				<select form="music" id="musicList">
 					<option value="0">Powerful</option>
@@ -35,20 +36,21 @@
 					<option value="2">Comedic</option>
 				</select>
 			</form>
+
 			<button id="submit">Press to be announced!</button>
 		</section>
 
 		<section id="pleaseWait" class="hide">
-			Please wait...<br>
-			You will be announced in approximately<br>
-			<div id="timer1"></div><br>
-			seconds.
+			<div class="timerscreen">Please wait...</div>
+			<div class="timerscreen">You will be announced in approximately</div>
+			<div id="timer1" class="timerscreen"></div>
+			<div class="timerscreen">seconds.</div>
 		</section>
 
 		<section id="confirmed" class="hide">
-			Entry confirmed! You should enter in<br>
-			<div id="timer2"></div><br>
-			seconds!
+			<div class="timerscreen">Entry confirmed! You should enter in</div>
+			<div id="timer2" class="timerscreen"></div><br>
+			<div class="timerscreen">seconds!</div>
 		</section>
 
 		<section id="welcome" class="hide">

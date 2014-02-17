@@ -1,15 +1,77 @@
+body {
+	font-family: 'Lato', sans-serif;
+	color: white;
+	background-color: rgb(117, 9, 36);
+	text-align: center;
+	/*font-weight: 900;*/
+}
+
+#title {
+	font-size: 64px;
+	font-weight: 900;
+	padding-top: 5%;
+}
+
+#instructions {
+	font-size: 24px;
+	font-weight: 400;
+	padding-top: 3%;
+}
+
 .hide {
 	display: none;
 }
 
-label {
-	display: block;
+select {
+	margin-top: 2%;
+	/*border: 0;*/
+/*	-webkit-appearance: none;
+	-moz-appearance: none;
+*/	/*width: 150px;*/
+	text-align: center;
 }
 
-input, textarea {
+button {
+	margin-top: 2%;
+
+}
+
+/*label {
 	display: block;
 }
+*/
+
+.spacer {
+	display: inline-block;
+	width: 28%;
+}
+
 
 input {
+	margin-top: 5%;
 	width: 40%;
+	max-width: 40%;
+
 }
+
+
+#pleaseWait, #confirmed {
+	margin-top: 30%;
+}
+
+.timerscreen {
+	font-size: 24px;
+}
+
+#timer1, #timer2 {
+	margin-top: 18px;
+	margin-bottom: 12px;
+}
+
+#welcome {
+	font-size: 64px;
+	font-weight: 900;
+	padding-top: 40%;
+
+}
+
