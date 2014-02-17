@@ -23,6 +23,7 @@ window.onload = function () {
 
 		sb.addPublish ( "newGuest", "guestinfo", {arrivalname:"",knock:0,music:0} );
 		sb.addSubscribe ( "confirmation", "confirmmessage" );
+		sb.addSubscribe ( "waiting", "waittime" );
 
 		sb.onCustomMessage = onCustomMessage;
 
@@ -33,6 +34,7 @@ window.onload = function () {
 		// it can be generated to send to Processing app and
 		// used to compare against what comes back
 		var guestName = " ";
+		var waitTime = 0.0;
 
 		// add button listener
 		$('#submit').click (function (e) {
@@ -56,15 +58,18 @@ window.onload = function () {
 		})
 
 		function onCustomMessage( name, value, type ){
+			console.log(value);
 			if (type == "confirmmessage") {
-				value = JSON.parse(value);
-				console.log(value);
-
+				value = JSON.parse( value );
 				console.log("saved guestName is :" + guestName);
 				// change the background only if the name you get back is the same one you sent
-				if (value.name == guestName) {
-					document.body.style.backgroundColor="rgb(" + value.r + ", " + value.g + ", " + value.b + ")";
-				}
+				document.body.style.backgroundColor="rgb(" + value.r + ", " + value.g + ", " + value.b + ")";
+			}
+
+			if (type == "waittime") {
+				// value = JSON.parse( value );
+				// console.log("The wait time is " + value;
+
 			}
 		}
 	}
