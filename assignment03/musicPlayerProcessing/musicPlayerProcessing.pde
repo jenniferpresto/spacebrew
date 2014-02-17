@@ -46,6 +46,7 @@ Spacebrew sb;
 
 // info to send to web app
 JSONObject instantConfirmation;
+JSONObject waitConfirmation;
 ArrayList<JSONObject> waitlist; // will be used only if multiple people entering at once
 
 // info to receive from web app
@@ -81,18 +82,27 @@ void setup() {
   entranceClips[0] = minim.loadFile("alsoSprachZarathustra.mp3");
   entranceClips[1] = minim.loadFile("imperialMarchClip.aif");
   entranceClips[2] = minim.loadFile("clowns.mp3");
+  
+  for (int i = 0; i < 3; i++) {
+    println(knocks[i].length());
+    println(entranceClips[i].length());
+  }
 
   instantConfirmation = new JSONObject();
   instantConfirmation.setString("name", "");
   instantConfirmation.setInt("r", 100);
   instantConfirmation.setInt("g", 100);
   instantConfirmation.setInt("b", 100);
+  
+  waitConfirmation = new JSONObject();
+  waitConfirmation.setString("name", "");
+  waitConfirmation.setInt("waittime", 10000);
 
   waitlist = new ArrayList<JSONObject>();
 
   sb.addSubscribe("newGuest", "guestinfo");
   sb.addPublish("confirmation", "confirmmessage", "\"name\":\"\", \"r\":0, \"g\":0, \"b\":0");
-  sb.addPublish("waiting", "waittime", str(5000));
+  sb.addPublish("waiting", "waitconfirm", "\"name\":\"\", \"waittime\":10000");
 
   sb.connect(server, name, description);
 
@@ -192,7 +202,26 @@ void onCustomMessage ( String name, String type, String value ) {
       latestInfo.setInt("chosenMusic", arrival.getInt("music"));
       println("new waitlist object: \n" + latestInfo);
       println("size of the waitlist: " + waitlist.size());
-      //      sb.send( "waiting", "waittime", );
+      
+      // figure out long this person will have to wait
+      int estimatedWaitTime = 0;
+      // add the amount of time left for current announcement 
+      
+      // add up times for all people on the waitlist ahead of this person
+      for (int i = 0; i < waitlist.size() - 1; i++) {
+        JSONObject g = (JSONObject) waitlist.get(i);
+        estimatedWaitTime += knocks[g.getInt("chosenKnock")].length(); // add the length of the chosen knock
+        estimatedWaitTime += entranceClips[g.getInt("chosenMusic")].length(); // add the length of the chosen music
+        estimatedWaitTime += 13000; // add 13 seconds (time between knock and music, plus 10 seconds after)
+      }
+      
+      // then send the person's name back to him/her, along with the estimated wait time
+      waitConfirmation.setString("name", arrival.getString("arrivalname") );
+      waitConfirmation.setInt("waittime", estimatedWaitTime);
+      
+      println("estimated wait time: " + estimatedWaitTime);
+      
+      sb.send( "waiting", "waitconfirm", waitConfirmation.toString() );
     }
   }
 }
