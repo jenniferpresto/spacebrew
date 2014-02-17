@@ -10,6 +10,24 @@
  Parsons MFA-DT, Spacebrew Collab
  February 18, 2014
  
+ Credit where credit's due:
+ 
+ Record scratch sound:
+ http://www.youtube.com/watch?v=4uQ2P0xgenw
+ Door knocking sound:
+ http://www.youtube.com/watch?v=CNZDm_zKCIo
+ Whistle sound from here:
+ http://www.youtube.com/watch?v=mYpmyE1fliE
+ Gong sound from here:
+ http://www.youtube.com/watch?v=eg7NXRJwYXs
+ 
+ Also Sprach Zarathustra from here:
+ http://www.youtube.com/watch?v=QwxYiVXYyVs
+ Imperial march from here:
+ http://www.youtube.com/watch?v=-bzWSJG93P8
+ Circus music from here:
+ http://www.youtube.com/watch?v=HAa8aICcZqA&list=PLC669C97ADC22682F&index=3
+ 
  ************************ */
 
 // Audio
@@ -19,6 +37,10 @@ import ddf.minim.*;
 import ddf.minim.analysis.*;
 import ddf.minim.ugens.*;
 import ddf.minim.effects.*;
+
+Minim minim;
+AudioPlayer[] knocks = new AudioPlayer[3];
+AudioPlayer[] entranceClips = new AudioPlayer[3];
 
 // Spacebrew
 import spacebrew.*;
@@ -32,8 +54,8 @@ JSONObject instantConfirmation;
 
 // info to receive from web app
 String guestName = "";
-int knockIndex;
-int musicIndex;
+int knockIndex = 0;
+int musicIndex = 0;
 
 // executables to stop/start iTunes player
 String iTunesPlayApp;
@@ -45,7 +67,16 @@ color bgColor = color(0, 0, 0);
 void setup() {
   //  size(displayWidth, displayHeight);
   size(800, 600);
+  minim = new Minim( this );
   sb = new Spacebrew( this );
+  
+  // loading up the various sound clips
+  knocks[0] = minim.loadFile("knocking.mp3");
+  knocks[1] = minim.loadFile("whistle.mp3");
+  knocks[2] = minim.loadFile("gong.mp3");
+  entranceClips[0] = minim.loadFile("alsoSprachZarathustra.mp3");
+  entranceClips[1] = minim.loadFile("imperialMarchClip.aif");
+  entranceClips[2] = minim.loadFile("clowns.mp3");
 
   instantConfirmation = new JSONObject();
   instantConfirmation.setString("name", "");
@@ -102,6 +133,8 @@ void onCustomMessage ( String name, String type, String value ) {
 
     // change background color here to same color
     bgColor = color(red, green, blue);
+    
+    entranceClips[musicIndex].play();
   }
 }
 
