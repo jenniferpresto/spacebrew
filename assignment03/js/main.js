@@ -63,7 +63,9 @@ window.onload = function () {
 				value = JSON.parse( value );
 				console.log("saved guestName is :" + guestName);
 				// change the background only if the name you get back is the same one you sent
-				document.body.style.backgroundColor="rgb(" + value.r + ", " + value.g + ", " + value.b + ")";
+				if ( value.name == guestName ) {
+					document.body.style.backgroundColor="rgb(" + value.r + ", " + value.g + ", " + value.b + ")";
+				}
 			}
 
 			if (type == "waittime") {
