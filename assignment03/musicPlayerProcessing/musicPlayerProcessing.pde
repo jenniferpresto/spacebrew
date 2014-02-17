@@ -61,6 +61,7 @@ String iTunesPauseApp;
 // variables for display
 PFont centuryGothic;
 color bgColor = color(0, 0, 0);
+int red, green, blue;
 
 // variables for timing audio
 boolean bEntranceInProgress = false;
@@ -82,7 +83,7 @@ void setup() {
   entranceClips[0] = minim.loadFile("alsoSprachZarathustra.mp3");
   entranceClips[1] = minim.loadFile("imperialMarchClip.aif");
   entranceClips[2] = minim.loadFile("clowns.mp3");
-  
+
   for (int i = 0; i < 3; i++) {
     println(knocks[i].length());
     println(entranceClips[i].length());
@@ -93,7 +94,7 @@ void setup() {
   instantConfirmation.setInt("r", 100);
   instantConfirmation.setInt("g", 100);
   instantConfirmation.setInt("b", 100);
-  
+
   waitConfirmation = new JSONObject();
   waitConfirmation.setString("name", "");
   waitConfirmation.setInt("waittime", 10000);
@@ -128,7 +129,7 @@ void draw() {
     text(guestName, width/2, height/2);
     // first, stop iTunes, play knock immediately, and start the timer
     if ( !bKnockingStarted ) {
-      open(iTunesPauseApp);
+      open( iTunesPauseApp );
       entranceStartTime = millis();
       knocks[knockIndex].play();
       bKnockingStarted = true;
@@ -154,6 +155,23 @@ void draw() {
       biTunesRestarted = false;
     }
   }
+
+  // if there is no entrance in progress, check to see if there are people on the waitlist
+  // if so, execute similar function to the immediate confirmation
+  else if ( waitlist.size() > 0 ) {
+    JSONObject g = (JSONObject)waitlist.get(0);
+    guestName = g.getString("name");
+    knockIndex = g.getInt("chosenKnock");
+    musicIndex = g.getInt("chosenMusic");
+    red = g.getInt("r");
+    green = g.getInt("g");
+    blue = g.getInt("b");
+    
+    // once we have the information we need, delete that person from the waitlist
+    waitlist.remove(0);
+    
+    packageSendEntrance();
+  }
 }
 
 // this function is called when app receives a message from the web app via Spacebrew
@@ -161,10 +179,11 @@ void onCustomMessage ( String name, String type, String value ) {
   if ( type.equals("guestinfo") ) {
     JSONObject arrival = JSONObject.parse( value );
     println("arrival object: " + arrival);
-    // pick a random color
-    int red = int(random(255));
-    int green = int(random(255));
-    int blue = int(random(255));
+
+    // pick a random color (on the dark side of the spectrum)
+    red = int(random(150));
+    green = int(random(150));
+    blue = int(random(150));
 
     // if no one is currently entering, we'll send confirmation immediately
     // and start the entrance
@@ -173,22 +192,9 @@ void onCustomMessage ( String name, String type, String value ) {
       knockIndex = arrival.getInt("knock");
       musicIndex = arrival.getInt("music");
 
-      // change background color to random color
-      bgColor = color(red, green, blue);
-
-      // send that color to the web app,
-      // along with name to make sure they match
-      instantConfirmation.setString("name", guestName);
-      instantConfirmation.setInt("r", red);
-      instantConfirmation.setInt("g", green);
-      instantConfirmation.setInt("b", blue);
-      instantConfirmation.setInt("waittime", knocks[knockIndex].length() + 3000 );
-      
-      sb.send( "confirmation", "confirmmessage", instantConfirmation.toString() );
-
-      bEntranceInProgress = true;
+      packageSendEntrance();
     }
-    
+
     // but if someone is already making his/her entrance,
     // add all the new person's information to an ArrayList and send
     // the wait time instead
@@ -203,13 +209,13 @@ void onCustomMessage ( String name, String type, String value ) {
       latestInfo.setInt("chosenMusic", arrival.getInt("music"));
       println("new waitlist object: \n" + latestInfo);
       println("size of the waitlist: " + waitlist.size());
-      
+
       // figure out long this person will have to wait
       int estimatedWaitTime = 0;
       // add the amount of time left in the current announcement
       estimatedWaitTime += (entranceStartTime + knocks[knockIndex].length() + entranceClips[musicIndex].length() + 13000) - millis();
       println("this much time left: " + estimatedWaitTime);
-      
+
       // then add up times for all people on the waitlist ahead of this person
       for (int i = 0; i < waitlist.size() - 1; i++) {
         JSONObject g = (JSONObject) waitlist.get(i);
@@ -217,14 +223,32 @@ void onCustomMessage ( String name, String type, String value ) {
         estimatedWaitTime += entranceClips[g.getInt("chosenMusic")].length(); // add the length of the chosen music
         estimatedWaitTime += 13000; // add 13 seconds (time between knock and music, plus 10 seconds after)
       }
-      
+
       // then send the person's name back to him/her, along with the estimated wait time
       waitConfirmation.setString("name", arrival.getString("arrivalname") );
       waitConfirmation.setInt("waittime", estimatedWaitTime);
-      
+
       println("estimated wait time: " + estimatedWaitTime);
-      
+
       sb.send( "waiting", "waitconfirm", waitConfirmation.toString() );
     }
   }
 }
+
+void packageSendEntrance() {
+  // change background color to random color
+  bgColor = color(red, green, blue);
+
+  // send that color to the web app,
+  // along with name to make sure they match
+  instantConfirmation.setString("name", guestName);
+  instantConfirmation.setInt("r", red);
+  instantConfirmation.setInt("g", green);
+  instantConfirmation.setInt("b", blue);
+  instantConfirmation.setInt("waittime", knocks[knockIndex].length() + 3000 );
+
+  sb.send( "confirmation", "confirmmessage", instantConfirmation.toString() );
+
+  bEntranceInProgress = true;
+}
+
