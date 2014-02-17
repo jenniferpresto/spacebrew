@@ -65,6 +65,7 @@ color bgColor = color(0, 0, 0);
 boolean bEntranceInProgress = false;
 boolean bKnockingStarted = false;
 boolean bMusicStarted = false;
+boolean biTunesRestarted = false;
 int entranceStartTime = 0;
 
 void setup() {
@@ -104,6 +105,7 @@ void setup() {
 }
 
 void draw() {
+  // most of the time, the app shows only a black screen
   background(0);
 
   // when someone activates the web app, begin the process of
@@ -127,10 +129,11 @@ void draw() {
       bMusicStarted = true;
     }
     // third part restarts iTunes
-    else if (millis() > entranceStartTime + knocks[knockIndex].length() + 3000 + entranceClips[musicIndex].length() + 100 ) {
+    else if (millis() > entranceStartTime + knocks[knockIndex].length() + 3000 + entranceClips[musicIndex].length() + 100 && !biTunesRestarted ) {
       open(iTunesPlayApp);
       knocks[knockIndex].rewind();
       entranceClips[musicIndex].rewind();
+      biTunesRestarted = true;
     }
     // fourth and last part makes sure there's a 10-second buffer before next person can be announced
     //  resets all boolean variables
@@ -138,6 +141,7 @@ void draw() {
       bEntranceInProgress = false;
       bKnockingStarted = false;
       bMusicStarted = false;
+      biTunesRestarted = false;
     }
   }
 }
@@ -190,20 +194,5 @@ void onCustomMessage ( String name, String type, String value ) {
       println("size of the waitlist: " + waitlist.size());
       //      sb.send( "waiting", "waittime", );
     }
-
-    // println("Let's see what we're sending: \n" + instantConfirmation.toString());
   }
 }
-
-// debugging
-//void mousePressed() {
-//  println("calling mousePressed function");
-//  //  open("/Users/SandlapperNYC/Developer/SpacebrewClass/SpacebrewRepo/assignment03/iTunesPlaypause.app");
-//  open(iTunesPlayApp);
-//}
-//
-//void keyPressed() {
-//  println("calling keyPressed");
-//  open(iTunesPauseApp);
-//}
-
