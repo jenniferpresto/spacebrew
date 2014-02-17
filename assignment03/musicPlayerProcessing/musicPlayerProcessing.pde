@@ -31,12 +31,7 @@
  ************************ */
 
 // Audio
-//import ddf.minim.spi.*;
-//import ddf.minim.signals.*;
 import ddf.minim.*;
-//import ddf.minim.analysis.*;
-//import ddf.minim.ugens.*;
-//import ddf.minim.effects.*;
 
 Minim minim;
 AudioPlayer[] knocks = new AudioPlayer[3];
@@ -61,14 +56,15 @@ int musicIndex = 0;
 String iTunesPlayApp;
 String iTunesPauseApp;
 
+// variables for display
 PFont centuryGothic;
 color bgColor = color(0, 0, 0);
 
+// variables for timing audio
 boolean bEntranceInProgress = false;
 boolean bKnockingStarted = false;
 boolean bMusicStarted = false;
 int entranceStartTime = 0;
-
 
 void setup() {
   //  size(displayWidth, displayHeight);
@@ -108,9 +104,9 @@ void draw() {
 
   // when someone activates the web app, begin the process of
   // playing the appropriate knock and music, with a
-  // three-second delay between them
-  // following if-else-statements divided into three parts, each of which
-  // will be called for one frame each 
+  // three-second delay between them.
+  // The following if-else-statements are divided into three parts, 
+  // each of which will be called for one frame. 
   if (bEntranceInProgress) {
     background(bgColor);
     text(guestName, width/2, height/2);
@@ -140,16 +136,12 @@ void draw() {
 
 // this function is called when app receives a message from the web app via Spacebrew
 void onCustomMessage ( String name, String type, String value ) {
-  println("received!");
   if ( type.equals("guestinfo") ) {
-    println("in the if-statement");
     JSONObject arrival = JSONObject.parse( value );
     println("arrival object: " + arrival);
     guestName = arrival.getString("arrivalname");
     knockIndex = arrival.getInt("knock");
     musicIndex = arrival.getInt("music");
-
-    println(guestName + " would like to enter to music " + str(musicIndex));
 
     // pick a random color
     int red = int(random(255));
@@ -163,14 +155,15 @@ void onCustomMessage ( String name, String type, String value ) {
     instantConfirmation.setInt("g", green);
     instantConfirmation.setInt("b", blue);
 
-    println("Let's see what we're sending: \n" + instantConfirmation.toString());
-    sb.send("confirmation", "confirmmessage", instantConfirmation.toString());
+    // if no one is currently entering, we'll send it immediately
+    if ( !bEntranceInProgress ) {
+      bEntranceInProgress = true;
+      sb.send("confirmation", "confirmmessage", instantConfirmation.toString());
+    }
+    // println("Let's see what we're sending: \n" + instantConfirmation.toString());
 
     // change background color here to same color
     bgColor = color(red, green, blue);
-
-    // reset the timer and start process when someone arrives
-    bEntranceInProgress = true;
   }
 }
 
