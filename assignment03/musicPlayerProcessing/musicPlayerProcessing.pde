@@ -101,7 +101,7 @@ void setup() {
   waitlist = new ArrayList<JSONObject>();
 
   sb.addSubscribe("newGuest", "guestinfo");
-  sb.addPublish("confirmation", "confirmmessage", "\"name\":\"\", \"r\":0, \"g\":0, \"b\":0");
+  sb.addPublish("confirmation", "confirmmessage", "\"name\":\"\", \"r\":0, \"g\":0, \"b\":0, \"waittime\": 0");
   sb.addPublish("waiting", "waitconfirm", "\"name\":\"\", \"waittime\":10000");
 
   sb.connect(server, name, description);
@@ -182,6 +182,7 @@ void onCustomMessage ( String name, String type, String value ) {
       instantConfirmation.setInt("r", red);
       instantConfirmation.setInt("g", green);
       instantConfirmation.setInt("b", blue);
+      instantConfirmation.setInt("waittime", knocks[knockIndex].length() + 3000 );
       
       sb.send( "confirmation", "confirmmessage", instantConfirmation.toString() );
 

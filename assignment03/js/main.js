@@ -67,41 +67,44 @@ window.onload = function () {
 		function onCustomMessage( name, value, type ){
 			console.log(value);
 			value = JSON.parse ( value );
-			console.log("saved guestName is :" + guestName);
+			waitTime = Math.floor( value.waittime / 1000 );
+			console.log("saved guestName is :" + guestName + "and wait time is " + waitTime);
 
 			// only run these functions if responding to the same person
 			if ( value.name == guestName ) {
 
 				if (type == "confirmmessage") {
-					// change the background only if the name you get back is the same one you sent
-					// if ( value.name == guestName ) {
-						document.body.style.backgroundColor="rgb(" + value.r + ", " + value.g + ", " + value.b + ")";
-					// }
+					document.body.style.backgroundColor="rgb(" + value.r + ", " + value.g + ", " + value.b + ")";
+					$("#nameEntry").addClass("hide");
+					$("#pleaseWait").addClass("hide");
+					$("#confirmed").removeClass("hide");
+					// counter = setInterval (countDownTimer, 1000);
+
 				} else if (type == "waitconfirm") {
 					// again, change webpage of only the relevant guest
 					console.log ("getting wait message, and the info is ", value );
-					// if ( value.name == guestName ) {
 						// hide the main page and show timer page
-						$("#nameEntry").addClass("hide");
-						$("#pleaseWait").removeClass("hide");
+					$("#nameEntry").addClass("hide");
+					$("#pleaseWait").removeClass("hide");
 
-						var milliseconds = value.waittime;
-						console.log("millis: " + milliseconds);
-						waitTime = Math.floor( value.waittime / 1000 );
-						console.log("total time: " + waitTime);
-						counter = setInterval (countDownTimer, 1000);
-					// }
+					console.log("total time: " + waitTime);
 				}
+				counter = setInterval (countDownTimer, 1000);
 			}
 		}
 
 		function countDownTimer() {
+			console.log("calling timer");
 			waitTime -= 1;
 			if ( waitTime <= 0 ) {
 				clearInterval ( counter );
 				return;
 			}
-			document.getElementById("timer").innerHTML = waitTime ;
+			document.getElementById("timer1").innerHTML = waitTime;
+			document.getElementById("timer2").innerHTML = waitTime;
+			// don't know what's wrong with JQuery
+			// $("#timer1").html = waitTime ;
+			// $("#timer2").html = waitTime ;
 		}
 	}
 
