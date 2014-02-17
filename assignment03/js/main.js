@@ -67,18 +67,19 @@ window.onload = function () {
 		function onCustomMessage( name, value, type ){
 			console.log(value);
 			value = JSON.parse ( value );
-			waitTime = Math.floor( value.waittime / 1000 );
 			console.log("saved guestName is :" + guestName + "and wait time is " + waitTime);
 
 			// only run these functions if responding to the same person
 			if ( value.name == guestName ) {
+
+				// change waitTime variable only if the names match
+				waitTime = Math.floor( value.waittime / 1000 );
 
 				if (type == "confirmmessage") {
 					document.body.style.backgroundColor="rgb(" + value.r + ", " + value.g + ", " + value.b + ")";
 					$("#nameEntry").addClass("hide");
 					$("#pleaseWait").addClass("hide");
 					$("#confirmed").removeClass("hide");
-					// counter = setInterval (countDownTimer, 1000);
 
 				} else if (type == "waitconfirm") {
 					// again, change webpage of only the relevant guest
@@ -89,6 +90,7 @@ window.onload = function () {
 
 					console.log("total time: " + waitTime);
 				}
+
 				counter = setInterval (countDownTimer, 1000);
 			}
 		}
