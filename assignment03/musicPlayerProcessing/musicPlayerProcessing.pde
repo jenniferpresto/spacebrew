@@ -205,9 +205,11 @@ void onCustomMessage ( String name, String type, String value ) {
       
       // figure out long this person will have to wait
       int estimatedWaitTime = 0;
-      // add the amount of time left for current announcement 
+      // add the amount of time left in the current announcement
+      estimatedWaitTime += (entranceStartTime + knocks[knockIndex].length() + entranceClips[musicIndex].length() + 13000) - millis();
+      println("this much time left: " + estimatedWaitTime);
       
-      // add up times for all people on the waitlist ahead of this person
+      // then add up times for all people on the waitlist ahead of this person
       for (int i = 0; i < waitlist.size() - 1; i++) {
         JSONObject g = (JSONObject) waitlist.get(i);
         estimatedWaitTime += knocks[g.getInt("chosenKnock")].length(); // add the length of the chosen knock

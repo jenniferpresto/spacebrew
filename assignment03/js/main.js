@@ -74,15 +74,13 @@ window.onload = function () {
 
 				if (type == "confirmmessage") {
 					// change the background only if the name you get back is the same one you sent
-					if ( value.name == guestName ) {
+					// if ( value.name == guestName ) {
 						document.body.style.backgroundColor="rgb(" + value.r + ", " + value.g + ", " + value.b + ")";
-					}
-				}
-
-				if (type == "waitconfirm") {
+					// }
+				} else if (type == "waitconfirm") {
 					// again, change webpage of only the relevant guest
 					console.log ("getting wait message, and the info is ", value );
-					if ( value.name == guestName ) {
+					// if ( value.name == guestName ) {
 						// hide the main page and show timer page
 						$("#nameEntry").addClass("hide");
 						$("#pleaseWait").removeClass("hide");
@@ -92,7 +90,7 @@ window.onload = function () {
 						waitTime = Math.floor( value.waittime / 1000 );
 						console.log("total time: " + waitTime);
 						counter = setInterval (countDownTimer, 1000);
-					}
+					// }
 				}
 			}
 		}
