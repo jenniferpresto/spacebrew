@@ -90,6 +90,7 @@ void setup() {
   instantConfirmation.setInt("r", 100);
   instantConfirmation.setInt("g", 100);
   instantConfirmation.setInt("b", 100);
+  instantConfirmation.setInt("waittime", 5000);
 
   // create JSON object that will be sent when person must wait
   waitConfirmation = new JSONObject();
