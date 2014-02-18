@@ -3,7 +3,7 @@
 
 This is a two-part app that allows guests to enter a party while their chosen form of theme music plays. Guests connect via a web app, which communicates with the party host's Processing app.
 
-The web app alerts Processing to the guest's arrival, and Processing queues any waiting guests and plays the appropriate knock and theme music at the appropriate time.
+The web app alerts Processing to the guests' arrivals, and Processing queues any waiting guests and plays the appropriate knock and theme music at the appropriate time.
 
 ####Components
 The included items are as follows:
