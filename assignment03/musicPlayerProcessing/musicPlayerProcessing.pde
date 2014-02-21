@@ -71,8 +71,8 @@ boolean biTunesRestarted = false;
 int entranceStartTime = 0;
 
 void setup() {
-  //  size(displayWidth, displayHeight);
-  size(800, 600); // for debugging
+  size(displayWidth, displayHeight);
+//  size(800, 600); // for debugging
   minim = new Minim( this );
   sb = new Spacebrew( this );
 
